@@ -28,7 +28,7 @@ public class UserResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto user) {
         if(user.getId() != null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Zapisywany obiekt nie może mieć ustawionego id");
         UserDto savedUser = userService.save(user);
@@ -38,5 +38,20 @@ public class UserResource {
                 .buildAndExpand(savedUser.getId())
                 .toUri();
         return ResponseEntity.created(location).body(savedUser);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
+        return userService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateById(@PathVariable Long id, @RequestBody UserDto userDto) {
+        if(!id.equals(userDto.getId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu");
+        UserDto updatedUser = userService.update(userDto);
+        return ResponseEntity.ok(updatedUser);
     }
 }
