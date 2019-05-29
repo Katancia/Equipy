@@ -38,4 +38,19 @@ public class AssetResource {
                 .toUri();
         return ResponseEntity.created(location).body(savedAsset);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AssetDto> findById(@PathVariable Long id) {
+        return assetService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AssetDto> updateById(@PathVariable Long id, @RequestBody AssetDto assetDto) {
+        if(!id.equals(assetDto.getId()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu");
+        AssetDto updateAssert = assetService.update(assetDto);
+        return ResponseEntity.ok(updateAssert);
+    }
 }
