@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,5 +31,19 @@ public class AssetService {
                 .stream()
                 .map(assetMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public AssetDto save(AssetDto assetDto) {
+        Optional<Asset> assetBySerialNumber = assetRepository.findBySerialNumber(assetDto.getSerialNumber());
+        assetBySerialNumber.ifPresent(asset -> {
+            throw new DuplicateSerialNumberException();
+        });
+        return mapAndSaveAsset(assetDto);
+    }
+
+    private AssetDto mapAndSaveAsset(AssetDto assetDto) {
+        Asset assetEntity = assetMapper.toEntity(assetDto);
+        Asset savedAsset = assetRepository.save(assetEntity);
+        return assetMapper.toDto(savedAsset);
     }
 }
