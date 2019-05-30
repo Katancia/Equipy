@@ -1,6 +1,10 @@
 package pl.karol.equipy.user;
 
+import pl.karol.equipy.asssignment.Assignment;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +19,8 @@ public class User {
     private String lastName;
     @Column(length = 11, unique = true)
     private String pesel;
+    @OneToMany(mappedBy = "user")
+    private List<Assignment> assignments = new ArrayList<>();
 
     public User() {
     }
@@ -49,6 +55,14 @@ public class User {
 
     public void setPesel(String pesel) {
         this.pesel = pesel;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     @Override
