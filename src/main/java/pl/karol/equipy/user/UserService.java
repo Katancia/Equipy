@@ -52,12 +52,6 @@ public class UserService {
         return mapAndSaveUser(userDto);
     }
 
-    private UserDto mapAndSaveUser(UserDto userDto) {
-        User userEntity = UserMapper.toEntity(userDto);
-        User savedUser = userRepository.save(userEntity);
-        return UserMapper.toDto(savedUser);
-    }
-
     public List<UserAssignmentDto> getUserAssignments(Long userId) {
         return userRepository.findById(userId)
                 .map(User::getAssignments)
@@ -66,4 +60,12 @@ public class UserService {
                 .map(UserAssignmentMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    private UserDto mapAndSaveUser(UserDto userDto) {
+        User userEntity = UserMapper.toEntity(userDto);
+        User savedUser = userRepository.save(userEntity);
+        return UserMapper.toDto(savedUser);
+    }
+
+
 }
