@@ -7,6 +7,7 @@ import pl.karol.equipy.asset.AssetRepository;
 import pl.karol.equipy.user.User;
 import pl.karol.equipy.user.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,5 +40,16 @@ public class AssignmentService {
                 new InvalidAssignmentException("Brak wyposażenia z id: " + assignmentDto.getAssetId())));
         assignment.setStart(LocalDateTime.now());
         return AssignmentMapper.toDto(assignmentRepository.save(assignment));
+    }
+
+    @Transactional
+    public LocalDateTime finishAssignment(Long assignmentId) {
+        Optional<Assignment> assignment = assignmentRepository.findById(assignmentId);
+        Assignment assignmentFound = assignment.orElseThrow(AssignmentNotFoundException::new);
+        if(assignmentFound.getEnd() != null)
+            throw new AssignmentAlreadyFinishedException();
+        else
+            assignmentFound.setEnd(LocalDateTime.now());
+        return assignmentFound.getEnd();
     }
 }
