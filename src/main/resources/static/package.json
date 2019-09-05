@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Equipment managemenet app",
   "main": "index.js",
-  "author": "JavaStart",
+  "author": "Karol",
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.3.1",
